@@ -1,0 +1,173 @@
+{% load bootstrap3 %}
+{%load static%}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Fishtold</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{%static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="{%static 'vendor/font-awesome/css/font-awesome.min.css'%}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Cabin:700' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <link href="{%static 'css/grayscale.min.css'%}" rel="stylesheet">
+
+  </head>
+
+  <body id="page-top">
+
+
+
+    <!-- Intro Header -->
+    <header class="masthead">
+      <div class="box-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12 mx-auto">
+              <h1>{{box.fish_type}}</h1>
+
+        					<h4>{{box.company.name}}  <i class="fa fa-star text-warning"></i><i class="fa fa-star text-warning"></i><i class="fa fa-star text-warning"></i><i class="fa fa-star text-warning"></i></h4>
+
+
+        							<h4 class="list-group-item-heading">
+        								{{box.fishing.vessel.name}}
+        							</h4>
+        							<p class="list-group-item-text">Av Tarihi:<b>
+        								{{box.fishing.start_date}}</b>
+        							</p>
+
+        				<img alt="Bootstrap Image Preview" src="/media/{{box.fishing.vessel.picture}}" height="200" width="300"/>
+
+        		</div>
+        	</div>
+
+
+              <a href="#route" class="btn btn-circle js-scroll-trigger">
+                <i class="fa fa-angle-double-down animated"></i>
+              </a>
+        </div>
+
+      </div>
+    </header>
+
+    <section id="route" class="content-section text-center">
+      <h2>Route</h2>
+      <div id="map"></div>
+      <a href="#contact" class="btn btn-circle js-scroll-trigger">
+        <i class="fa fa-angle-double-down animated"></i>
+      </a>
+    </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="content-section text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <h2>Contact Fishtold</h2>
+            <p>Feel free to leave us a comment on the
+              <a href="http://fishtold.com/">Fishtold home page</a>
+              </p>
+            <ul class="list-inline banner-social-buttons">
+              <li class="list-inline-item">
+                <a href="https://twitter.com/fishtold" class="btn btn-default btn-lg">
+                  <i class="fa fa-twitter fa-fw"></i>
+                  <span class="network-name">Twitter</span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="https://facebook.com/fishtold" class="btn btn-default btn-lg">
+                  <i class="fa fa-facebook fa-fw"></i>
+                  <span class="network-name">Facebook</span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="https://instagram.com/fishtold" class="btn btn-default btn-lg">
+                  <i class="fa fa-instagram fa-fw"></i>
+                  <span class="network-name">Instagram</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <a href="#page-top" class="btn btn-circle js-scroll-trigger">
+          <i class="fa fa-angle-double-up animated"></i>
+        </a>
+      </div>
+    </section>
+
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{%static 'vendor/jquery/jquery.min.js'%}"></script>
+    <script src="{%static 'vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="{%static 'vendor/jquery-easing/jquery.easing.min.js'%}"></script>
+
+    <script src="http://maps.google.com/maps/api/js?sensor=false&key=AIzaSyD9z9vTqdnf1viLYp3j0ACqC8XGn0y9tBs"
+          type="text/javascript"></script>
+
+    <script type="text/javascript">
+      var locations = [
+        ['{{harbor_name}}', {{harbor_lat}},{{harbor_lon}}, 1],
+      ];
+
+
+
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 10,
+        center: new google.maps.LatLng({{harbor_lat}},{{harbor_lon}}),//-33.92, 151.25),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
+
+      var infowindow = new google.maps.InfoWindow();
+
+      var marker, i;
+
+      for (i = 0; i < locations.length; i++) {
+        marker = new google.maps.Marker({
+          position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+          map: map
+        });
+
+
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+          return function() {
+            infowindow.setContent(locations[i][0]);
+            infowindow.open(map, marker);
+          }
+        })(marker, i));
+      }
+
+      var mypolyline = new google.maps.Polyline({
+      map: map,
+      path: [
+        {% for point in points %}
+          new google.maps.LatLng({{ point }}) {% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ]
+      })
+    </script>
+
+    <!-- Custom scripts for this template -->
+    <script src="{%static 'js/grayscale.min.js'%}"></script>
+
+
+  </body>
+
+</html>
